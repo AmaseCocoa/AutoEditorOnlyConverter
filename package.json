@@ -1,6 +1,6 @@
 {
   "name": "cc.amase.vpm.aoc",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "displayName": "AutoEditorOnlyConverter",
   "description": "指定したオブジェクトのTagを一括でEditorOnlyに切り替える！",
   "unity": "2022.3",
