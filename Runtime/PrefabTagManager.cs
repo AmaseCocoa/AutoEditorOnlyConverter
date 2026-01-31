@@ -1,12 +1,15 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-[CreateAssetMenu(fileName = "PrefabTagManager", menuName = "Tools/Prefab Tag Manager")]
-public class PrefabTagManager : ScriptableObject
+public class SceneBuildTagManager : MonoBehaviour
 {
-    [Tooltip("ビルド時にEditorOnlyにしたいPrefabのリスト")]
-    public List<GameObject> targetPrefabs = new List<GameObject>();
+    [Header("ビルド時にEditorOnlyにするリスト")]
+    public List<GameObject> targetObjects = new List<GameObject>();
 
-    [Tooltip("このマネージャーによる自動変換を有効にするか")]
+    [Header("Blueprint ID 設定 (空なら常に有効)")]
+    [Tooltip("ここにIDを登録すると、そのIDでビルドする時のみ実行されます")]
+    public List<string> targetBlueprintIds = new List<string>();
+
+    [Header("この機能を有効にするか")]
     public bool isEnabled = true;
 }
