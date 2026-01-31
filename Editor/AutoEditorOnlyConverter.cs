@@ -3,33 +3,32 @@ using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
 using System.Collections.Generic;
+using VRC.Core;
 
 public class PrefabTagBuildProcessor : IPreprocessBuildWithReport, IPostprocessBuildWithReport
 {
     public int callbackOrder => 0;
-    private List<(GameObject obj, string originalTag)> changedObjects = new List<(GameObject, string)>();
+    private List<(GameObject obj, string originalTag)> _changedObjects = new List<(GameObject, string)>();
 
     public void OnPreprocessBuild(BuildReport report)
     {
-        changedObjects.Clear();
+        _changedObjects.Clear();
 
-        string[] guids = AssetDatabase.FindAssets("t:PrefabTagManager");
-        foreach (string guid in guids)
+        var manager = Object.FindObjectOfType<SceneBuildTagManager>();
+        if (manager == null || !manager.isEnabled) return;
+
+        var pipelineManager = Object.FindObjectOfType<PipelineManager>();
+        string currentId = pipelineManager != null ? pipelineManager.blueprintId : "";
+
+        if (!string.IsNullOrEmpty(currentId) && manager.targetBlueprintIds.Contains(currentId))
         {
-            string path = AssetDatabase.GUIDToAssetPath(guid);
-            var manager = AssetDatabase.LoadAssetAtPath<PrefabTagManager>(path);
+            return;
+        }
 
-            if (manager == null || !manager.isEnabled) continue;
-
-            GameObject[] allObjects = Object.FindObjectsOfType<GameObject>();
-            foreach (var go in allObjects)
-            {
-                GameObject source = PrefabUtility.GetCorrespondingObjectFromSource(go);
-                if (source != null && manager.targetPrefabs.Contains(source))
-                {
-                    ApplyTagRecursive(go);
-                }
-            }
+        foreach (var go in manager.targetObjects)
+        {
+            if (go == null) continue;
+            ApplyTagRecursive(go);
         }
     }
 
@@ -37,9 +36,10 @@ public class PrefabTagBuildProcessor : IPreprocessBuildWithReport, IPostprocessB
     {
         if (go.tag != "EditorOnly")
         {
-            changedObjects.Add((go, go.tag));
+            _changedObjects.Add((go, go.tag));
             go.tag = "EditorOnly";
         }
+
         foreach (Transform child in go.transform)
         {
             ApplyTagRecursive(child.gameObject);
@@ -48,10 +48,11 @@ public class PrefabTagBuildProcessor : IPreprocessBuildWithReport, IPostprocessB
 
     public void OnPostprocessBuild(BuildReport report)
     {
-        foreach (var item in changedObjects)
+        foreach (var item in _changedObjects)
         {
             if (item.obj != null) item.obj.tag = item.originalTag;
         }
-        changedObjects.Clear();
+        _changedObjects.Clear();
     }
 }
+
