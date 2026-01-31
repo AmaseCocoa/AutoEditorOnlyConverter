@@ -1,0 +1,11 @@
+{
+  "name": "cc.amase.vpm.aoc",
+  "version": "0.1.0",
+  "displayName": "AutoEditorOnlyConverter",
+  "description": "指定したオブジェクトのTagを一括でEditorOnlyに切り替える！",
+  "unity": "2022.3",
+  "author": {
+    "name": "AmaseCocoa"
+  },
+  "vpmDependencies": {}
+}
