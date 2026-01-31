@@ -2,7 +2,6 @@
     "name": "cc.amase.vpm.aoc.Editor",
     "rootNamespace": "",
     "references": [
-        "GUID:875246f1a2b1b4146909b2ae4e20f259",
         "cc.amase.vpm.aoc"
     ],
     "includePlatforms": [
@@ -17,3 +16,4 @@
     "versionDefines": [],
     "noEngineReferences": false
 }
+
